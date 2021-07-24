@@ -69,7 +69,7 @@ public class BikeStats {
     // the same.
     //
     public Stream<LatLng> locationsOfStops() {
-        return Stream.empty();
+        return ride.fusedFramesStream().filter(df -> df.velocity == 0).map(df -> df.coordinate);
     }
 
 }
