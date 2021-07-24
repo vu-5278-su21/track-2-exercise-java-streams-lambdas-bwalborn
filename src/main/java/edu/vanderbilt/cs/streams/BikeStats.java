@@ -11,6 +11,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+
 import edu.vanderbilt.cs.streams.BikeRide.LatLng;
 
 public class BikeStats {
@@ -42,7 +43,18 @@ public class BikeStats {
      * @return
      */
     public Stream<BikeRide.DataFrame> averagedDataFrameStream(int windowSize){
-        return Stream.empty();
+        List<BikeRide.DataFrame> frames =
+        ride.fusedFramesStream().collect(Collectors.toList());
+
+        return StreamUtils.slidingWindow(frames, windowSize)
+                .map(window ->
+                        new BikeRide.DataFrame(
+                                window.get(0).coordinate,
+                                StreamUtils.averageOfProperty(BikeRide.DataFrame::getGrade).apply(window),
+                                StreamUtils.averageOfProperty(BikeRide.DataFrame::getAltitude).apply(window),
+                                StreamUtils.averageOfProperty(BikeRide.DataFrame::getVelocity).apply(window),
+                                StreamUtils.averageOfProperty(BikeRide.DataFrame::getHeartRate).apply(window))
+                        );
     }
 
     // @ToDo:

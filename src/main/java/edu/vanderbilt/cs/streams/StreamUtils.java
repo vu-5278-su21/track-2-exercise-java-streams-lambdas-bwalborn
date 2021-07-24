@@ -38,7 +38,14 @@ public class StreamUtils {
         // 3. List.subLIst will be useful to you
         // 4. A windowSize < 1 should return an empty stream
 
-        return Stream.empty();
+        if (windowSize < 1) {
+            return Stream.empty();
+        }
+
+        return IntStream.range(0, data.size() - windowSize + 1)
+                .mapToObj(index -> {
+                    return data.subList(index, index + windowSize);
+                });
     }
 
     /**
@@ -69,7 +76,7 @@ public class StreamUtils {
             // You need to update this code here to
             // return the average of the property that
             // is extracted with the function `f`
-            return 0.0;
+            return window.stream().mapToDouble(f).average().getAsDouble();
         };
     }
 
